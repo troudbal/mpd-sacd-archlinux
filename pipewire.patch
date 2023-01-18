@@ -1,0 +1,17 @@
+--- mpd.orig/src/output/plugins/PipeWireOutputPlugin.cxx	2023-01-18 23:12:56.535602377 +0100
++++ mpd.new/src/output/plugins/PipeWireOutputPlugin.cxx	2023-01-18 23:28:23.267883170 +0100
+@@ -489,7 +489,13 @@
+ 		pw_properties_setf(props, PW_KEY_REMOTE_NAME, "%s", remote);
+ 
+ 	if (target != nullptr && target_id == PW_ID_ANY)
+-		pw_properties_setf(props, PW_KEY_NODE_TARGET, "%s", target);
++		pw_properties_setf(props,
++#if PW_CHECK_VERSION(0, 3, 64)
++				   PW_KEY_TARGET_OBJECT,
++#else
++				   PW_KEY_NODE_TARGET,
++#endif
++				   "%s", target);
+ 
+ #ifdef PW_KEY_NODE_RATE
+ 	/* ask PipeWire to change the graph sample rate to ours
